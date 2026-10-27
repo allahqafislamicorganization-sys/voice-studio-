@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ভয়েস স্টুডিও</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f1fb;--s:#fff;--ink:#17133a;--mut:#6b6990;--ln:#e4e0f3;--pri:#6a3cff;--pri2:#2f8bff;--pi:#fff;--ok:#12b886;--bad:#e5386d;--soft:#ece6ff;--glow:rgba(106,60,255,.18);--aura:rgba(106,60,255,.15);--sh:0 14px 32px -20px rgba(70,40,160,.5);--navbg:rgba(255,255,255,.86);--g:linear-gradient(135deg,var(--pri),var(--pri2))}
+@media (prefers-color-scheme:dark){:root{--bg:#0a0818;--s:#151230;--ink:#f0eeff;--mut:#a29fc8;--ln:#2a2554;--pri:#9a7bff;--pri2:#4db4ff;--pi:#0a0620;--ok:#3fe0b5;--bad:#ff7aa8;--soft:#241f4f;--glow:rgba(154,123,255,.3);--aura:rgba(106,60,255,.34);--sh:0 14px 32px -18px rgba(0,0,0,.85);--navbg:rgba(21,18,48,.86)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;color:var(--ink);font:16px/1.6 "Hind Siliguri","Noto Sans Bengali",system-ui,sans-serif;background:radial-gradient(120% 55% at 50% -8%,var(--aura),transparent 62%),var(--bg);background-attachment:fixed;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(104px + env(safe-area-inset-bottom,0px));max-width:560px;margin-inline:auto}
+header{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 18px}
+h1{font-size:2.1rem;line-height:1.15;margin:0;font-weight:700;background:var(--g);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+h1 small{display:block;font-size:.86rem;font-weight:500;margin-top:2px;-webkit-text-fill-color:var(--mut)}
+.wave{display:flex;align-items:center;gap:4px;height:48px;padding:0 14px;background:var(--s);border:1px solid var(--ln);border-radius:999px;box-shadow:var(--sh)}
+.wave i{width:5px;border-radius:3px;background:linear-gradient(var(--pri2),var(--pri));height:calc(var(--h)*.8)}
+.wave.busy i{animation:bar .9s ease-in-out infinite;animation-delay:var(--d)}
+@keyframes bar{50%{height:calc(var(--h)*.25)}}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+.tab{display:none}.tab.on{display:block;animation:in .28s ease}
+.box{background:var(--s);border:1px solid var(--ln);border-radius:24px;padding:18px;margin-bottom:14px;box-shadow:var(--sh)}
+.box h2{display:flex;align-items:center;gap:8px;font-size:1.08rem;margin:0 0 8px}
+.box h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--glow)}
+label{display:block;margin:12px 0 5px;font-size:.86rem;font-weight:500;color:var(--mut)}
+input,textarea,select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--ln);border-radius:14px;padding:11px 14px;transition:border-color .2s,box-shadow .2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--pri);box-shadow:0 0 0 4px var(--glow)}
+select{appearance:none;-webkit-appearance:none;padding-right:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238b88b5' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+textarea{min-height:230px;resize:vertical;line-height:1.8;font-size:1.02rem}
+input[type=range]{padding:0;accent-color:var(--pri);border:0;box-shadow:none;background:transparent;height:30px}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:12px 22px;background:var(--g);color:var(--pi);cursor:pointer;box-shadow:0 10px 22px -10px var(--pri);transition:transform .12s,opacity .2s}
+button:active{transform:scale(.96)}
+button.ghost{background:var(--soft);color:var(--pri);padding:9px 16px;font-size:.9rem;box-shadow:none}
+button.bad{background:transparent;color:var(--bad);padding:8px 12px;box-shadow:none}
+button:disabled{opacity:.5;cursor:wait}
+.meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;color:var(--mut);font-size:.86rem}
+.meta span{flex:1 0 100%;background:var(--soft);color:var(--pri);padding:6px 14px;border-radius:999px;font-weight:500;text-align:center}
+.meta #go{flex:1 0 100%;padding:15px;font-size:1.08rem}
+.hint{font-size:.82rem;color:var(--mut);margin:8px 0 0}
+.pg{height:8px;background:var(--ln);border-radius:4px;margin:14px 0;overflow:hidden}.pg div{height:100%;width:0;background:var(--g);transition:width .3s}
+.scene{position:relative;background:var(--s);border:1px solid var(--ln);border-radius:20px;padding:14px 16px 14px 20px;margin-top:12px;overflow:hidden;box-shadow:var(--sh)}
+.scene::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--g)}
+.sh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.tag{background:var(--soft);color:var(--pri);border-radius:999px;padding:1px 12px;font-size:.8rem;font-weight:500}
+.txt{margin:6px 0 10px;color:var(--mut);font-size:.92rem;white-space:pre-wrap}
+.st{color:var(--mut);font-size:.9rem}.err{color:var(--bad)}
+audio{width:100%;height:42px;margin-top:6px;border-radius:14px}
+.ac{display:flex;gap:12px;align-items:center;margin-top:10px;flex-wrap:wrap}
+a.dl{color:var(--pri);font-weight:600;text-decoration:none;background:var(--soft);padding:7px 14px;border-radius:999px;font-size:.9rem}
+.gauge{display:flex;align-items:center;gap:20px}
+.gauge svg{width:138px;height:138px;flex:none;filter:drop-shadow(0 8px 16px var(--glow))}
+.gauge b{font-size:1.9rem;display:block;line-height:1.2}
+.log{list-style:none;margin:0;padding:0}
+.log li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--ln);font-size:.92rem}
+.log li:first-child{border-top:0}
+.log li span:first-child{color:var(--mut);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vl{list-style:none;margin:10px 0 0;padding:0}
+.vl li{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--ln);padding:8px 0;gap:8px}
+.vl small{color:var(--mut);display:block;word-break:break-all}
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(12px + env(safe-area-inset-bottom,0px));width:min(92%,500px);display:flex;gap:4px;padding:6px;border-radius:28px;background:var(--navbg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border:1px solid var(--ln);box-shadow:0 18px 40px -16px rgba(30,10,90,.55)}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:.78rem;padding:8px 4px;border-radius:22px;background:transparent;color:var(--mut);box-shadow:none}
+nav button.on{background:var(--soft);color:var(--pri)}
+nav svg{width:22px;height:22px}
+ .toolgrid{display:grid;grid-template-columns:1fr;gap:14px}
+ .smallbtn{padding:8px 12px;font-size:.88rem}
+ .dictitem{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--ln)}
+ .dictitem span{min-width:0;overflow-wrap:anywhere}
+ .scene-tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+ .scene-tools select,.scene-tools input{padding:7px 9px;font-size:.86rem}
+ @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+<h1>ভয়েস স্টুডিও<small>বাংলা ভয়েসওভার, সিন ধরে ধরে</small></h1>
+<div class="wave" id="wave" aria-hidden="true"></div>
+</header>
+
+<section class="tab on" id="studio">
+<div class="box">
+<label for="ac" style="margin-top:0">অ্যাকাউন্ট (API key)</label><select id="ac"></select>
+<div class="row">
+<div><label for="dv" style="margin-top:0">ডিফল্ট ভয়েস</label><select id="dv"></select></div>
+<div><label for="emo" style="margin-top:0">আবেগ</label>
+<select id="emo"><option value="neutral">স্বাভাবিক</option><option value="content">তৃপ্ত</option><option value="excited">উত্তেজিত</option><option value="sad">দুঃখী</option><option value="angry">রাগী</option><option value="scared">ভীত</option></select></div>
+</div>
+<label for="sp">কথার গতি: <span id="spv"></span></label>
+<input id="sp" type="range" min="0.6" max="1.5" step="0.1">
+<label for="sc">স্ক্রিপ্ট</label>
+<textarea id="sc" placeholder="প্রথম সিনের লেখা...&#10;&#10;স্টিভ: এই সিন স্টিভের ভয়েসে হবে।"></textarea>
+<p class="hint">সিনের মাঝে ফাঁকা লাইন দিন। সিনের শুরুতে "ভয়েসের নাম:" লিখলে ওই সিন সেই ভয়েসে হবে।</p>
+<div class="meta"><span id="cnt"></span><button id="go">অডিও বানান</button></div>
+<div class="pg" id="pgw" hidden><div id="pg"></div></div>
+<p class="err" id="msg"></p>
+</div>
+<div id="out"></div>
+<button id="all" hidden style="width:100%;margin-top:12px">সব সিন এক ফাইলে ডাউনলোড</button>
+<button id="srt" hidden style="width:100%;margin-top:10px" class="ghost">সাবটাইটেল (.srt) ডাউনলোড</button>
+<div class="box" style="margin-top:16px">
+<h2>স্ক্রিপ্ট লাইব্রেরি</h2>
+<label for="scriptName">স্ক্রিপ্টের নাম</label><input id="scriptName" placeholder="যেমন: ঘুম কেন জরুরি">
+<div class="row" style="margin-top:10px"><button id="saveScript" class="ghost">স্ক্রিপ্ট সেভ</button><button id="loadScript" class="ghost">লোড</button></div>
+<label for="scriptList">সেভ করা স্ক্রিপ্ট</label><select id="scriptList"><option value="">কোনো স্ক্রিপ্ট নেই</option></select>
+<div class="ac"><button id="deleteScript" class="bad">নির্বাচিত স্ক্রিপ্ট মুছুন</button></div>
+<p class="hint" id="scriptMsg">স্ক্রিপ্ট এই ফোনের অ্যাপেই সেভ থাকবে।</p>
+</div>
+<div class="box">
+<h2>উচ্চারণ অভিধান</h2>
+<p class="hint" style="margin-top:0">এখানে ইংরেজি শব্দের বদলে বাংলা উচ্চারণ লিখুন। অডিও বানানোর সময় বদলাবে; আপনার মূল স্ক্রিপ্ট বদলাবে না।</p>
+<div class="row"><div><label for="dictFrom">যে শব্দটি আছে</label><input id="dictFrom" placeholder="Minecraft"></div><div><label for="dictTo">যেভাবে বলবে</label><input id="dictTo" placeholder="মাইনক্রাফট"></div></div>
+<div class="ac"><button id="addDict" class="ghost">শব্দ যোগ করুন</button></div>
+<ul class="vl" id="dictList"></ul>
+<p class="hint" id="dictMsg"></p>
+</div>
+</section>
+
+<section class="tab" id="credit">
+<div class="box">
+<div class="gauge"><div id="ring"></div><div><span class="hint" id="mn"></span><b id="rem"></b><span class="hint" id="est"></span></div></div>
+<div class="ac"><button class="ghost" id="syb">Cartesia থেকে আসল হিসাব আনুন</button></div>
+<p class="hint" id="sy"></p>
+</div>
+<div class="box"><h2>সব অ্যাকাউন্ট</h2><ul class="log" id="al"></ul></div>
+<div class="box">
+<h2>মাসিক লিমিট</h2>
+<input id="lim" type="number" min="0" inputmode="numeric">
+<div class="ac"><button class="ghost" data-l="20000">ফ্রি ২০,০০০</button><button class="ghost" data-l="100000">১,০০,০০০</button><button class="bad" id="rs">ব্যবহার রিসেট</button></div>
+<p class="hint">এটা আপনার ফোনের হিসাব, ১ অক্ষর ≈ ১ ক্রেডিট। আসল ব্যালেন্স play.cartesia.ai-তে দেখুন। মাস বদলালে হিসাব নিজে শূন্য হয়।</p>
+</div>
+<div class="box"><h2>সাম্প্রতিক ব্যবহার</h2><ul class="log" id="log"></ul></div>
+</section>
+
+<section class="tab" id="set">
+<div class="box">
+<h2>অ্যাকাউন্ট</h2>
+<label for="ac2" style="margin-top:0">চালু অ্যাকাউন্ট</label><select id="ac2"></select>
+<label for="an">এই অ্যাকাউন্টের নাম</label><input id="an" placeholder="যেমন: প্রথম অ্যাকাউন্ট">
+<div class="ac"><button class="ghost" id="aa">নতুন অ্যাকাউন্ট</button><button class="bad" id="ad">এটা মুছুন</button></div>
+<p class="hint" id="am">প্রতিটি অ্যাকাউন্টের নিজের API key, Admin key, ভয়েস আর ক্রেডিট হিসাব আলাদা। নিচের key আর ভয়েস চালু অ্যাকাউন্টের।</p>
+</div>
+<div class="box">
+<label for="key" style="margin-top:0">Cartesia API key</label>
+<input id="key" type="password" autocomplete="off" placeholder="sk_car_...">
+<div class="row"><div><label for="model">মডেল</label><input id="model"></div><div><label for="lang">ভাষা</label><input id="lang"></div></div>
+<label for="ver">API version</label><input id="ver">
+<label for="adm">Admin key (আসল ক্রেডিট হিসাবের জন্য)</label>
+<input id="adm" type="password" autocomplete="off" placeholder="sk_car_admin_...">
+<p class="hint">play.cartesia.ai/keys/admin থেকে বানান। এটা সাধারণ key-এর চেয়ে ক্ষমতাশালী, তাই কাউকে দেবেন না।</p>
+</div>
+<div class="box">
+<h2 id="vh">আমার ভয়েস</h2>
+<div class="row"><input id="vn" placeholder="নাম (যেমন স্টিভ)"><input id="vi" placeholder="Voice ID"></div>
+<div class="ac"><button class="ghost" id="va">ভয়েস যোগ করুন</button></div>
+<ul class="vl" id="vl"></ul>
+<p class="hint">Voice ID পাবেন play.cartesia.ai/voices থেকে। সব তথ্য শুধু এই ফোনেই থাকে।</p>
+</div>
+<div class="box">
+<h2>সেভ ও ব্যাকআপ</h2>
+<p class="hint" style="margin-top:0">key, ভয়েস, স্ক্রিপ্ট আর সব সেটিংস নিজে নিজে সেভ হয় এবং ক্যাশ ক্লিয়ার না করা পর্যন্ত থাকে। ক্যাশ ক্লিয়ারের আগে ব্যাকআপ কপি করে রাখতে পারেন।</p>
+<div class="ac"><button class="ghost" id="bk">ব্যাকআপ কপি</button><button class="ghost" id="rt">ব্যাকআপ থেকে ফেরান</button></div>
+<p class="hint" id="bm"></p>
+</div>
+</section>
+
+<nav>
+<button class="on" data-t="studio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg><span>স্টুডিও</span></button>
+<button data-t="credit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 3v9h9"/></svg><span>ক্রেডিট</span></button>
+<button data-t="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h8M18 6h2M4 12h2M12 12h8M4 18h10M20 18h0"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/></svg><span>সেটিংস</span></button>
+</nav>
+
+<script>
+const $=s=>document.querySelector(s);
+const h=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+const bn=n=>String(n).replace(/\d/g,d=>"০১২৩৪৫৬৭৮৯"[d]);
+const fmt=n=>bn(Math.round(n).toLocaleString("en-US"));
+const K="cv2";
+let S={model:"sonic-3.5",lang:"bn",ver:"2025-04-16",draft:"",speed:1,emo:"neutral",accs:[],ai:0,dictionary:[],scripts:[]},R=[];
+const mkAcc=(n,o)=>({n,key:"",adm:"",voices:[],limit:20000,used:0,month:"",log:[],dv:0,...o});
+const AF=["key","adm","voices","limit","used","month","log","dv"];
+function load(o){
+  if(!o||typeof o!=="object")return;
+  if(!o.accs){const a=mkAcc("অ্যাকাউন্ট ১");AF.forEach(k=>{if(o[k]!==undefined)a[k]=o[k]});o={...o,accs:[a],ai:0};AF.forEach(k=>delete o[k])}
+  Object.assign(S,o)}
+try{load(JSON.parse(localStorage.getItem(K)||"{}"))}catch(e){}
+AF.forEach(k=>Object.defineProperty(S,k,{get(){return S.accs[S.ai][k]},set(v){S.accs[S.ai][k]=v}}));
+const idb=()=>new Promise((res,rej)=>{const q=indexedDB.open("cv",1);q.onupgradeneeded=()=>q.result.createObjectStore("s");q.onsuccess=()=>res(q.result);q.onerror=()=>rej()});
+async function idbPut(v){try{const d=await idb();d.transaction("s","readwrite").objectStore("s").put(v,K)}catch(e){}}
+async function idbGet(){try{const d=await idb();return await new Promise(r=>{const q=d.transaction("s").objectStore("s").get(K);q.onsuccess=()=>r(q.result);q.onerror=()=>r(null)})}catch(e){return null}}
+const save=()=>{S.ts=Date.now();const j=JSON.stringify(S);try{localStorage.setItem(K,j)}catch(e){}idbPut(j)};
+const mon=()=>new Date().toISOString().slice(0,7);
+function fix(){
+  if(!Array.isArray(S.dictionary))S.dictionary=[];
+  if(!Array.isArray(S.scripts))S.scripts=[];
+  if(!Array.isArray(S.accs)||!S.accs.length)S.accs=[mkAcc("অ্যাকাউন্ট ১")];
+  S.accs=S.accs.map(a=>mkAcc(a.n||"অ্যাকাউন্ট",a));
+  if(!(S.ai>=0&&S.ai<S.accs.length))S.ai=0;
+  S.accs.forEach(a=>{if(a.month!==mon()){a.month=mon();a.used=0;a.log=[]}})}
+fix();
+
+/* wave header */
+[14,28,40,22,34,18,30,12].forEach((v,i)=>{const b=h("i");b.style.cssText="--h:"+v+"px;--d:"+(i*.11)+"s";$("#wave").append(b)});
+const wave=on=>$("#wave").classList.toggle("busy",on);
+
+/* tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("on",t.id===b.dataset.t));
+  if(b.dataset.t==="credit"){drawCredit();if(S.adm)sync()}window.scrollTo(0,0)});
+
+/* settings */
+["key","model","lang","ver","adm"].forEach(k=>{const e=$("#"+k);e.value=S[k];e.oninput=()=>{S[k]=e.value.trim();save()}});
+
+/* অ্যাকাউন্ট */
+function accs(){
+  ["ac","ac2"].forEach(id=>{const s=$("#"+id);s.textContent="";S.accs.forEach((a,i)=>{const o=h("option",0,a.n+" · বাকি "+fmt(Math.max(0,a.limit-a.used)));o.value=i;s.append(o)});s.value=S.ai});
+  if(document.activeElement!==$("#an"))$("#an").value=S.accs[S.ai].n;
+  $("#vh").textContent="ভয়েস ("+S.accs[S.ai].n+")"}
+function sw(i){S.ai=i;save();fill()}
+["ac","ac2"].forEach(id=>$("#"+id).onchange=e=>sw(+e.target.value));
+$("#an").oninput=e=>{S.accs[S.ai].n=e.target.value.trim()||"অ্যাকাউন্ট";save();accs();drawCredit()};
+$("#aa").onclick=()=>{S.accs.push(mkAcc("অ্যাকাউন্ট "+bn(S.accs.length+1),{month:mon()}));sw(S.accs.length-1);$("#am").textContent="নতুন অ্যাকাউন্ট তৈরি হয়েছে। নাম, API key আর ভয়েস বসান।"};
+$("#ad").onclick=()=>{
+  if(S.accs.length<2){$("#am").textContent="অন্তত একটা অ্যাকাউন্ট থাকতে হবে।";return}
+  if(confirm("\""+S.accs[S.ai].n+"\" অ্যাকাউন্ট আর তার ভয়েসগুলো মুছবেন?")){S.accs.splice(S.ai,1);S.ai=0;save();fill()}};
+function voices(){
+  const sel=$("#dv"),ul=$("#vl");sel.textContent="";ul.textContent="";
+  if(S.dv>=S.voices.length)S.dv=0;
+  S.voices.forEach((v,i)=>{
+    const o=h("option",0,v.n);o.value=i;sel.append(o);
+    const li=h("li"),d=h("div");d.append(h("b",0,v.n),h("small",0,v.id));
+    const x=h("button","bad","মুছুন");x.onclick=()=>{S.voices.splice(i,1);save();voices()};
+    li.append(d,x);ul.append(li)});
+  sel.value=S.dv;if(!S.voices.length)sel.append(h("option",0,"আগে সেটিংসে ভয়েস যোগ করুন"));
+  upd()}
+$("#va").onclick=()=>{const n=$("#vn").value.trim(),id=$("#vi").value.trim();if(!n||!id)return;S.voices.push({n,id});$("#vn").value=$("#vi").value="";save();voices()};
+$("#dv").onchange=e=>{S.dv=+e.target.value;save()};
+
+/* studio controls */
+$("#sc").value=S.draft;$("#emo").value=S.emo;$("#sp").value=S.speed;
+const spl=()=>$("#spv").textContent=bn(S.speed.toFixed(1))+"x";spl();
+$("#sp").oninput=e=>{S.speed=+e.target.value;spl();save()};
+$("#emo").onchange=e=>{S.emo=e.target.value;save()};
+$("#sc").oninput=()=>{S.draft=$("#sc").value;save();upd()};
+function parse(){
+  return $("#sc").value.split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean).map(s=>{
+    let v=S.voices[S.dv];const m=s.match(/^([^\s:：]{1,24})\s*[:：]\s*([\s\S]+)/);
+    if(m){const f=S.voices.find(x=>x.n===m[1]);if(f){v=f;s=m[2].trim()}}
+    return{t:s,v}})}
+function upd(){
+  const L=parse(),n=L.reduce((a,x)=>a+x.t.length,0);
+  $("#cnt").textContent=fmt(n)+" অক্ষর · "+bn(L.length)+" সিন · বাকি "+fmt(Math.max(0,S.limit-S.used))}
+
+/* ফাইল সেভ: অ্যাপের ভেতরে হলে ফোনের Download ফোল্ডারে, ব্রাউজারে হলে সাধারণ ডাউনলোড */
+async function saveBlob(b,name){
+  if(!window.AB){const a=h("a");a.href=URL.createObjectURL(b);a.download=name;a.click();return}
+  AB.begin(name);
+  for(let o=0;o<b.size;o+=786432){
+    const s=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result.split(",")[1]);f.readAsDataURL(b.slice(o,o+786432))});
+    AB.chunk(s)}
+  AB.end()}
+
+/* tts */
+function wav(p){
+  const d=new DataView(new ArrayBuffer(44)),s=(o,t)=>[...t].forEach((c,i)=>d.setUint8(o+i,c.charCodeAt(0)));
+  s(0,"RIFF");d.setUint32(4,36+p.length,true);s(8,"WAVEfmt ");d.setUint32(16,16,true);d.setUint16(20,1,true);d.setUint16(22,1,true);
+  d.setUint32(24,44100,true);d.setUint32(28,88200,true);d.setUint16(32,2,true);d.setUint16(34,16,true);s(36,"data");d.setUint32(40,p.length,true);
+  return new Blob([d,p],{type:"audio/wav"})}
+function applyDictionary(text){
+  let out=text;
+  const entries=[...(S.dictionary||[])].filter(x=>x&&x.from&&x.to).sort((a,b)=>b.from.length-a.from.length);
+  for(const d of entries){
+    const escaped=d.from.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+    try{out=out.replace(new RegExp(escaped,'gi'),d.to)}catch(e){}
+  }
+  return out}
+async function speak(t,v,a){
+  const b={model_id:S.model,transcript:applyDictionary(t),voice:{mode:"id",id:v.id},language:S.lang,output_format:{container:"raw",encoding:"pcm_s16le",sample_rate:44100}};
+  if(S.speed!==1||S.emo!=="neutral")b.generation_config={speed:S.speed,emotion:S.emo};
+  const r=await fetch("https://api.cartesia.ai/tts/bytes",{method:"POST",headers:{"Authorization":"Bearer "+a.key,"Cartesia-Version":S.ver,"Content-Type":"application/json"},body:JSON.stringify(b)});
+  if(!r.ok)throw new Error("HTTP "+r.status+": "+(await r.text()).slice(0,200));
+  return new Uint8Array(await r.arrayBuffer())}
+function use(n,label,a){a.used+=n;a.log.unshift({t:Date.now(),c:n,s:label});a.log=a.log.slice(0,40);save();upd();accs()}
+async function gen(i){
+  const r=R[i],c=r.card;c.st.className="st";c.st.textContent="বানানো হচ্ছে…";
+  try{
+    r.pcm=await speak(r.t,r.v,r.a);r.blob=wav(r.pcm);const u=URL.createObjectURL(r.blob);
+    c.st.textContent="";c.au.src=u;c.au.hidden=false;c.dl.href=u;c.dl.hidden=false;
+    use(r.t.length,r.v.n+": "+r.t.slice(0,28),r.a)
+  }catch(e){r.pcm=null;c.st.className="st err";c.st.textContent=e.message.includes("Failed to fetch")?"নেটওয়ার্ক বা ব্রাউজার (CORS) সমস্যা। নেট চেক করুন।":e.message}}
+const mergeBtn=()=>{const ready=!!(R.length&&R.every(r=>r.pcm));$("#all").hidden=!ready;$("#srt").hidden=!ready};
+function mk(i){
+  const r=R[i],d=h("div","scene"),hd=h("div","sh");
+  hd.append(h("b",0,"সিন "+bn(i+1)),h("span","tag",r.v.n));
+  const st=h("div","st"),au=h("audio"),ac=h("div","ac"),dl=h("a","dl","ডাউনলোড"),rg=h("button","ghost","আবার বানান");
+  au.controls=true;au.hidden=true;dl.download="scene-"+(i+1)+".wav";dl.hidden=true;dl.onclick=e=>{e.preventDefault();if(r.blob)saveBlob(r.blob,dl.download)};
+  rg.onclick=async()=>{rg.disabled=true;await gen(i);rg.disabled=false;mergeBtn()};
+  ac.append(dl,rg);d.append(hd,h("p","txt",r.t),st,au,ac);r.card={st,au,dl};return d}
+$("#go").onclick=async()=>{
+  const L=parse(),msg=$("#msg");msg.textContent="";
+  if(!S.key||!S.voices.length){msg.textContent="আগে সেটিংসে API key আর অন্তত একটা ভয়েস যোগ করুন।";return}
+  if(!L.length){msg.textContent="আগে স্ক্রিপ্ট লিখুন।";return}
+  const need=L.reduce((a,x)=>a+x.t.length,0),left=Math.max(0,S.limit-S.used);
+  const alt=S.accs.find((a,i)=>i!==S.ai&&a.limit-a.used>=need);
+  if(need>left&&!confirm("এই স্ক্রিপ্টে "+fmt(need)+" ক্রেডিট লাগবে, কিন্তু বাকি আছে "+fmt(left)+"।"+(alt?" "+alt.n+" অ্যাকাউন্টে যথেষ্ট আছে, চাইলে বাতিল করে অ্যাকাউন্ট বদলান।":"")+" তবুও চালাবেন?"))return;
+  $("#go").disabled=true;wave(true);$("#all").hidden=true;$("#out").textContent="";$("#pgw").hidden=false;$("#pg").style.width="0";
+  const A=S.accs[S.ai];R=L.map(x=>({...x,a:A}));R.forEach((_,i)=>$("#out").append(mk(i)));
+  for(let i=0;i<R.length;i++){await gen(i);$("#pg").style.width=((i+1)/R.length*100)+"%"}
+  wave(false);$("#go").disabled=false;mergeBtn()};
+$("#all").onclick=()=>{
+  const gap=new Uint8Array(35280),parts=[];R.forEach((r,i)=>{if(i)parts.push(gap);parts.push(r.pcm)});
+  const m=new Uint8Array(parts.reduce((a,p)=>a+p.length,0));let o=0;parts.forEach(p=>{m.set(p,o);o+=p.length});
+  saveBlob(wav(m),"voiceover-full.wav")};
+
+/* SRT: PCM mono 16-bit 44100Hz, তাই প্রতি সেকেন্ডে 88200 byte */
+function srtTime(sec){
+  const ms=Math.max(0,Math.round(sec*1000)),hh=Math.floor(ms/3600000),mm=Math.floor(ms%3600000/60000),ss=Math.floor(ms%60000/1000),mmm=ms%1000;
+  const pad=(n,w=2)=>String(n).padStart(w,"0");
+  return pad(hh)+":"+pad(mm)+":"+pad(ss)+","+pad(mmm,3)}
+$("#srt").onclick=()=>{
+  if(!R.length||!R.every(r=>r.pcm))return;
+  let cursor=0,lines=[];
+  R.forEach((r,i)=>{
+    const dur=r.pcm.length/88200;
+    lines.push((i+1)+"\\r\\n"+srtTime(cursor)+" --> "+srtTime(cursor+dur)+"\\r\\n"+r.t+"\\r\\n");
+    cursor+=dur+(i<R.length-1?0.4:0);
+  });
+  saveBlob(new Blob(["\\uFEFF"+lines.join("\\r\\n")],{type:"text/plain;charset=utf-8"}),"voiceover-subtitles.srt");
+};
+/* স্ক্রিপ্ট লাইব্রেরি */
+function drawScripts(){
+  const sel=$("#scriptList"),old=sel.value;sel.textContent="";
+  if(!S.scripts.length){sel.append(h("option",0,"কোনো স্ক্রিপ্ট নেই"));sel.value="";return}
+  S.scripts.forEach((x,i)=>{const o=h("option",0,x.name+" · "+new Date(x.updated||Date.now()).toLocaleDateString("bn-BD"));o.value=String(i);sel.append(o)});
+  if(old!==""&&+old<S.scripts.length)sel.value=old;
+}
+$("#saveScript").onclick=()=>{
+  const name=$("#scriptName").value.trim();
+  if(!name){$("#scriptMsg").textContent="আগে স্ক্রিপ্টের একটি নাম লিখুন।";return}
+  const at=S.scripts.findIndex(x=>x.name.toLocaleLowerCase()===name.toLocaleLowerCase());
+  const item={name,text:$("#sc").value,updated:Date.now()};
+  if(at>=0){if(!confirm("এই নামে আগে থেকেই স্ক্রিপ্ট আছে। সেটি বদলে সেভ করবেন?"))return;S.scripts[at]=item}
+  else S.scripts.unshift(item);
+  save();drawScripts();$("#scriptList").value=String(at>=0?at:0);$("#scriptMsg").textContent="স্ক্রিপ্ট সেভ হয়েছে।";
+};
+$("#loadScript").onclick=()=>{
+  const i=+$("#scriptList").value,x=S.scripts[i];
+  if(!x){$("#scriptMsg").textContent="লোড করার মতো স্ক্রিপ্ট বেছে নিন।";return}
+  $("#scriptName").value=x.name;$("#sc").value=x.text;S.draft=x.text;save();upd();$("#scriptMsg").textContent="স্ক্রিপ্ট লোড হয়েছে।";
+};
+$("#deleteScript").onclick=()=>{
+  const i=+$("#scriptList").value;
+  if(!S.scripts[i]){ $("#scriptMsg").textContent="মুছতে একটি স্ক্রিপ্ট বেছে নিন।";return}
+  if(confirm("নির্বাচিত স্ক্রিপ্টটি মুছবেন?")){S.scripts.splice(i,1);save();drawScripts();$("#scriptMsg").textContent="স্ক্রিপ্ট মুছে ফেলা হয়েছে।"}
+};
+/* উচ্চারণ অভিধান */
+function drawDictionary(){
+  const ul=$("#dictList");ul.textContent="";
+  (S.dictionary||[]).forEach((d,i)=>{
+    const li=h("li","dictitem"),txt=h("span",0,d.from+" → "+d.to),del=h("button","bad smallbtn","মুছুন");
+    del.onclick=()=>{S.dictionary.splice(i,1);save();drawDictionary()};
+    li.append(txt,del);ul.append(li);
+  });
+  if(!S.dictionary.length)ul.append(h("li","hint","এখনো কোনো শব্দ যোগ করা হয়নি।"));
+}
+$("#addDict").onclick=()=>{
+  const from=$("#dictFrom").value.trim(),to=$("#dictTo").value.trim();
+  if(!from||!to){$("#dictMsg").textContent="দুই ঘরেই শব্দ লিখুন।";return}
+  const i=S.dictionary.findIndex(x=>x.from.toLocaleLowerCase()===from.toLocaleLowerCase());
+  if(i>=0)S.dictionary[i]={from,to};else S.dictionary.push({from,to});
+  $("#dictFrom").value=$("#dictTo").value="";save();drawDictionary();$("#dictMsg").textContent="উচ্চারণের শব্দ সেভ হয়েছে।";
+};
+
+/* credit tab */
+function drawCredit(){
+  const p=S.limit>0?Math.min(1,S.used/S.limit):0,C=351.86,col=p>.85?"var(--bad)":"var(--pri)",left=Math.max(0,S.limit-S.used);
+  $("#ring").innerHTML='<svg viewBox="0 0 140 140"><circle cx="70" cy="70" r="56" fill="none" stroke="var(--ln)" stroke-width="12"/><circle cx="70" cy="70" r="56" fill="none" stroke="'+col+'" stroke-width="12" stroke-linecap="round" stroke-dasharray="'+C+'" stroke-dashoffset="'+C*(1-p)+'" transform="rotate(-90 70 70)"/><text x="70" y="78" text-anchor="middle" font-size="26" font-weight="700" fill="var(--ink)">'+bn(Math.round(p*100))+'%</text></svg>';
+  $("#mn").textContent=S.accs[S.ai].n+" · "+bn(S.month)+" মাস";
+  $("#rem").textContent=fmt(left)+" বাকি";
+  $("#est").textContent="ব্যবহার "+fmt(S.used)+" / "+fmt(S.limit)+" · প্রায় "+bn(Math.floor(left/775))+" মিনিটের অডিও";
+  $("#lim").value=S.limit;
+  const al=$("#al");al.textContent="";
+  S.accs.forEach((a,i)=>{const li=h("li"),b=h("button","ghost",i===S.ai?"চালু ✓":"ব্যবহার করুন");b.disabled=i===S.ai;b.onclick=()=>sw(i);li.append(h("span",0,a.n+" · "+fmt(Math.max(0,a.limit-a.used))+" বাকি"),b);al.append(li)});
+  const ul=$("#log");ul.textContent="";
+  if(!S.log.length)ul.append(h("li",0,"এই মাসে এখনো কিছু বানানো হয়নি"));
+  S.log.forEach(l=>{const li=h("li");li.append(h("span",0,new Date(l.t).toLocaleString("bn-BD",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"})+" · "+l.s),h("span",0,fmt(l.c)));ul.append(li)})}
+async function sync(){
+  const a=S.accs[S.ai],el=$("#sy");
+  if(!a.adm){el.className="hint";el.textContent="আসল হিসাব পেতে সেটিংসে এই অ্যাকাউন্টের Admin key দিন।";return}
+  el.className="hint";el.textContent="আনা হচ্ছে…";
+  try{
+    const r=await fetch("https://api.cartesia.ai/usage/credits?start_ts="+a.month+"-01T00:00:00Z",{headers:{"Authorization":"Bearer "+a.adm,"Cartesia-Version":"2026-03-01"}});
+    if(!r.ok)throw new Error("HTTP "+r.status);
+    const j=await r.json();
+    a.used=(j.data||[]).reduce((x,b)=>x+(b.credits||0),0);save();accs();drawCredit();upd();
+    el.textContent="Cartesia থেকে "+a.n+"-এর এই মাসের আসল হিসাব এসেছে।"
+  }catch(e){
+    el.className="hint err";
+    el.textContent=e.message.includes("fetch")?"নেটওয়ার্ক বা ব্রাউজার (CORS) সমস্যা।":"আনা যায়নি ("+e.message+")। Admin key ঠিক আছে কিনা দেখুন।"}}
+$("#syb").onclick=sync;
+$("#lim").oninput=e=>{S.limit=Math.max(0,+e.target.value||0);save();drawCredit();upd()};
+document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{S.limit=+b.dataset.l;save();drawCredit();upd()});
+$("#rs").onclick=()=>{if(confirm("এই মাসের ব্যবহার শূন্য করবেন?")){S.used=0;S.log=[];save();drawCredit();upd()}};
+
+function fill(){
+  ["key","model","lang","ver","adm"].forEach(k=>$("#"+k).value=S[k]||"");
+  $("#sc").value=S.draft||"";$("#emo").value=S.emo;$("#sp").value=S.speed;spl();voices();drawCredit();accs();drawScripts();drawDictionary()}
+fill();
+
+/* টিকে থাকার ব্যবস্থা: ব্রাউজারকে স্টোরেজ মুছতে না দেওয়ার অনুরোধ + IndexedDB থেকে ফেরানো */
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+(async()=>{
+  const raw=await idbGet();if(!raw)return;
+  try{
+    const o=JSON.parse(raw);
+    if((o.ts||0)>(S.ts||0)){load(o);fix();save();fill()}
+  }catch(e){}
+})();
+$("#bk").onclick=async()=>{
+  const t=JSON.stringify(S);
+  try{await navigator.clipboard.writeText(t);$("#bm").textContent="ব্যাকআপ কপি হয়েছে। কোথাও নিরাপদে পেস্ট করে রাখুন, এতে আপনার key আছে।"}
+  catch(e){prompt("এটা কপি করে রাখুন:",t)}};
+$("#rt").onclick=()=>{
+  const t=prompt("ব্যাকআপ পেস্ট করুন:");if(!t)return;
+  try{load(JSON.parse(t));fix();save();fill();$("#bm").textContent="সব ফেরানো হয়েছে।"}
+  catch(e){$("#bm").textContent="ব্যাকআপটা ঠিক নেই।"}};
+</script>
+</body>
+</html>
